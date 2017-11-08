@@ -1,0 +1,6 @@
+<app-pop-up-item *ngFor="let item of listObject; let i = index;"
+             [item]="item"
+             [index]="i"
+             (deleteCallback)="deleteItem($event)"
+             [@animate]="'fadeIn'"
+             (@animate.done)="closeDone($event, i, item.sendData)"></app-pop-up-item>

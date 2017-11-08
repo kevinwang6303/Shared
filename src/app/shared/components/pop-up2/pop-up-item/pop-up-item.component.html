@@ -1,0 +1,28 @@
+<div class="popup" [ngClass]="addClass.backdropClass" [style.z-index]="windowZindex - 2">
+  <div [@animate]="animateName" [ngClass]="addClass.panelClass" [ngStyle]="addStyle" [style.z-index]="windowZindex">
+
+
+    <!--關閉按鈕-->
+    <div *ngIf="!item.config?.disableCloseButton" [@animate]="'slideInRight'" [style.z-index]="windowZindex + 1" class="RightTop close_btn cursorPoint"
+      (click)="close(item)">
+      <div class="m-act-del">
+      </div>
+    </div>
+
+    <header *ngIf="!item.config?.disableTitle" class="topHeader">
+      <p class="popTitle" [innerHTML]="title"></p>
+    </header>
+
+    <article class="content">
+      <ng-template appViewContainer></ng-template>
+    </article>
+  </div>
+
+  <ng-container *ngIf="item.config?.hasBackdrop !== false">
+    <div *ngIf="!item.config?.disableClose; else elseBlackground" class="background" (click)="close(item)"></div>
+
+    <ng-template #elseBlackground>
+      <div class="background" [style.z-index]="windowZindex - 1"></div>
+    </ng-template>
+  </ng-container>
+</div>

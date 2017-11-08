@@ -1,0 +1,17 @@
+<div class="opendialog_layout" *ngIf="popUpObject.isShow" [@popup] (@popup.done)="animationDone($event)">
+  <div class="opendialog_cont_layout">
+    <div class="opendialog_cont">
+      <h2>{{ popUpObject.title }}</h2>
+      <div class="opendialog_text">
+        <ng-content></ng-content>
+      </div>
+    </div>
+    <span class="opendialog_close_btn" (click)="close()" *ngIf="!closeBtn">
+			</span>
+  </div>
+  <div *ngIf="autoClose; else elseBlackground" class="background" (click)="close()"></div>
+
+  <ng-template #elseBlackground>
+    <div class="background"></div>
+  </ng-template>
+</div>

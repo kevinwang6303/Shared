@@ -1,0 +1,43 @@
+<nav class="text_c">
+  <pagination-template #p="paginationApi" [maxSize]="maxSize" (pageChange)="pageChange.emit($event)">
+    <ul class="page-pagination">
+      <li class="text_pg">
+        <span>
+          <span>每頁顯示</span>
+          <span class="select_control">
+            <select (change)="emitPerPage()" [(ngModel)]="perPageNum">
+              <option value="10">10</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </span>
+          <span>筆</span>
+        </span>
+      </li>
+      <li class="text_nb">
+        <span>
+          <span>第{{ p.getCurrent() }}/{{ p.pages[p.pages.length - 1].value }}頁</span>
+        </span>
+      </li>
+      <li [class.disabled]="p.isFirstPage()">
+        <a (click)="p.setCurrent(0)">第一頁</a>
+      </li>
+      <li [class.disabled]="p.isFirstPage()">
+        <a (click)="p.previous()">
+          上一頁
+        </a>
+      </li>
+      <li [class.disabled]="p.isLastPage()">
+        <a (click)="next()">
+          下一頁
+        </a>
+      </li>
+      <li [class.disabled]="p.isLastPage()">
+        <a (click)="p.setCurrent(p.getLastPage())">
+          最終頁
+        </a>
+      </li>
+    </ul>
+  </pagination-template>
+</nav>

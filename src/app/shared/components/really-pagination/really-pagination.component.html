@@ -1,0 +1,43 @@
+<nav class="text_c">
+  <ul class="page-pagination text_btn">
+    <li class="text_pg">
+      <span>
+        <span>每頁顯示</span>
+        <span class="select_control">
+          <select (change)="changeCount($event.target.value)">
+            <option value="10">10</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </span>
+        <span>筆</span>
+      </span>
+    </li>
+    <li class="text_nb">
+      <span>
+        <span>第{{ pageModel?.pageIndex }}/{{ pageModel?.allCount }}頁</span>
+      </span>
+    </li>
+    <li>
+      <button [disabled]="pageModel.pageIndex === 1" (click)="inputPage(1)">
+        第一頁
+      </button>
+    </li>
+    <li>
+      <button [disabled]="pageModel.pageIndex === 1" (click)="inputPage(pageModel.pageIndex - 1)">
+        上一頁
+      </button>
+    </li>
+    <li>
+      <button [disabled]="pageModel.allCount === pageModel.pageIndex" (click)="inputPage(pageModel.pageIndex + 1)">
+        下一頁
+      </button>
+    </li>
+    <li>
+      <button [disabled]="pageModel.allCount === pageModel.pageIndex" (click)="inputPage(pageModel.allCount)">
+        最終頁
+      </button>
+    </li>
+  </ul>
+</nav>

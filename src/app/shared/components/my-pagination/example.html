@@ -1,0 +1,7 @@
+<ul *ngFor="let item of schedules
+                  | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage};
+                  let i = index">
+  <li>{{item}}</li>
+</ul>
+
+<app-my-pagination (pageChange)="currentPage = $event;" (perPageChange)="itemsPerPage = $event;" [perPageNum]="itemsPerPage"></app-my-pagination>
