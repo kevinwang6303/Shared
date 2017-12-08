@@ -9,6 +9,8 @@ import swal from 'sweetalert2';
 @Injectable()
 export class BaseService {
 
+  private blockObs$ = Observable.of(1).map(() => this.blockViewService.block());
+
   constructor(
     private http: HttpClient,
     private blockViewService: BlockViewService
@@ -81,69 +83,44 @@ export class BaseService {
 
   private next(methood: any) {
     this.blockViewService.block();
-    return methood.do(() => {
-      this.blockViewService.unblock();
-    }).catch((error: Response) => {
-      this.blockViewService.unblock();
-      this.handleError(error);
-    });
+    return this.blockObs$
+      .mergeMap(() => methood)
+      .do(() => this.blockViewService.unblock())
+      .catch((error: Response) => this.handleError(error));
   }
 
 
   private noBlockNext(methood: any) {
-    return methood.catch((error: Response) => {
-      this.handleError(error);
-    });
+    return methood
+      .catch((error: Response) => this.handleError(error));
   }
 
   private handleError(error: Response) {
+    this.blockViewService.unblock();
 
-    if (error.status === 404) {
-      swal({
-        title: '錯誤訊息!!!',
-        text: '伺服器發生404錯誤，請聯絡管理者!',
-        type: 'error'
-      });
-      return Observable.throw(new NotFoundError());
-    }
-
-    if (error.status === 400) {
-      swal({
-        title: '錯誤訊息!!!',
-        text: '伺服器發生400錯誤，請聯絡管理者!',
-        type: 'error'
-      });
-      return Observable.throw(new BadError(error.json()));
-    }
-
-    if (error.status === 401) {
-      swal({
-        title: '錯誤訊息!!!',
-        text: '伺服器發生401錯誤，請聯絡管理者!',
-        type: 'error'
-      });
-      return Observable.throw(new BadError(error.json()));
-    }
-
-    if (error.status === 403) {
-      swal({
-        title: '錯誤訊息!!!',
-        text: '您沒有權限，將回首頁',
-        type: 'error'
-      }).then(
-        () => {
-          // this.dbAuthService.noAuthority();
-        });
-
-      return Observable.throw(new BadError(error.json()));
-    }
-
-    swal({
+    let reqObj = new AppError(error);
+    const reqMessage = {
       title: '錯誤訊息!!!',
-      text: '伺服器發生錯誤，請聯絡管理者!',
+      text: `伺服器發生${error.status}錯誤，請聯絡管理者`,
       type: 'error'
-    });
-    return Observable.throw(new AppError(error));
+    };
+    switch (error.status) {
+      case 400:
+      case 401:
+        reqObj = new BadError(error.json());
+        break;
+      case 403:
+        reqMessage.text = `您沒有權限，將回首頁`;
+        reqObj = new BadError(error.json());
+        break;
+      case 404:
+        reqObj = new NotFoundError();
+        break;
+      default:
+        reqMessage.text = `伺服器發生錯誤，請聯絡管理者`;
+    }
+    swal(reqMessage);
+    return Observable.throw(reqObj);
   }
 
 }
